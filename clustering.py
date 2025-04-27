@@ -205,36 +205,6 @@ print(df_results.sort_values(by="Davies_Bouldin", ascending=True).head(10))
 
 """We saw there are a lot of similarity, we choose to use GMM for next codes and research.
 
-Visualize with UMAP and GMM because we saw erliear they are the best.
-"""
-
-def visualize_clusters(X_reduced, labels, dr_method, cluster_method, k, n):
-    fig = plt.figure(figsize=(8, 6))
-    ax = fig.add_subplot(111, projection='3d')
-
-    unique_labels = np.unique(labels)
-    for label in unique_labels:
-        ax.scatter(X_reduced[labels == label, 0],
-                   X_reduced[labels == label, 1],
-                   label=f'Cluster {label}')
-
-    ax.set_title(f'{dr_method} + {cluster_method} (k={k}, n={n})')
-    ax.set_xlabel('Dimension 1')
-    ax.set_ylabel('Dimension 2')
-    ax.set_zlabel('Dimension 3')
-    ax.legend()
-    plt.show()
-
-k = 2
-n = 3
-dr_method = 'UMAP'
-cluster_method = 'GMM'
-
-X_umap = umap.UMAP(n_components=6, n_neighbors=30, min_dist=0, random_state=42).fit_transform(X_processed)
-X_reduced = X_umap
-# Cluster the reduced data
-labels = cluster(X_reduced, cluster_method, k)
-visualize_clusters(X_reduced, labels, dr_method, cluster_method, k, n)
 
 """Evaluation of clustering quality:"""
 
@@ -341,6 +311,37 @@ print(ari_matrix)
 
 print("\nNormalized Mutual Information Matrix:")
 print(nmi_matrix)
+
+Visualize with UMAP and GMM because we saw erliear they are the best.
+"""
+
+def visualize_clusters(X_reduced, labels, dr_method, cluster_method, k, n):
+    fig = plt.figure(figsize=(8, 6))
+    ax = fig.add_subplot(111, projection='3d')
+
+    unique_labels = np.unique(labels)
+    for label in unique_labels:
+        ax.scatter(X_reduced[labels == label, 0],
+                   X_reduced[labels == label, 1],
+                   label=f'Cluster {label}')
+
+    ax.set_title(f'{dr_method} + {cluster_method} (k={k}, n={n})')
+    ax.set_xlabel('Dimension 1')
+    ax.set_ylabel('Dimension 2')
+    ax.set_zlabel('Dimension 3')
+    ax.legend()
+    plt.show()
+
+k = 2
+n = 6
+dr_method = 'UMAP'
+cluster_method = 'GMM'
+
+X_umap = umap.UMAP(n_components=n, n_neighbors=30, min_dist=0, random_state=42).fit_transform(X_processed)
+X_reduced = X_umap
+# Cluster the reduced data
+labels = cluster(X_reduced, cluster_method, k)
+visualize_clusters(X_reduced, labels, dr_method, cluster_method, k, n)
 
 """see the variables (numeric and categorial) vs the clusters
 Calculate the categorical distributions by cluster
